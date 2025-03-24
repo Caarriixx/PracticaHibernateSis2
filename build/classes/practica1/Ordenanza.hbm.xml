@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 24-feb-2025 22:39:37 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="practica1.Ordenanza" table="ordenanza" catalog="db" optimistic-lock="version">
+        <id name="id" type="int">
+            <column name="id" />
+            <generator class="assigned" />
+        </id>
+        <property name="ayuntamiento" type="string">
+            <column name="ayuntamiento" length="50" not-null="true" />
+        </property>
+        <property name="tipoVehiculo" type="string">
+            <column name="tipoVehiculo" length="50" not-null="true" />
+        </property>
+        <property name="unidad" type="string">
+            <column name="unidad" length="50" not-null="true" />
+        </property>
+        <property name="minimoRango" type="double">
+            <column name="minimoRango" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="maximoRango" type="double">
+            <column name="maximoRango" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="importe" type="double">
+            <column name="importe" precision="22" scale="0" not-null="true" />
+        </property>
+        <set name="vehiculoses" table="vehiculos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idOrdenanza" not-null="true" />
+            </key>
+            <one-to-many class="practica1.Vehiculos" />
+        </set>
+    </class>
+</hibernate-mapping>

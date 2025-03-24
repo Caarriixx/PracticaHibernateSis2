@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 24-feb-2025 22:39:37 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="practica1.Vehiculos" table="vehiculos" catalog="db" optimistic-lock="version">
+        <id name="idVehiculo" type="int">
+            <column name="idVehiculo" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="contribuyente" class="practica1.Contribuyente" fetch="select">
+            <column name="idContrubuyente" not-null="true" />
+        </many-to-one>
+        <many-to-one name="ordenanza" class="practica1.Ordenanza" fetch="select">
+            <column name="idOrdenanza" not-null="true" />
+        </many-to-one>
+        <property name="tipo" type="string">
+            <column name="tipo" length="50" not-null="true" />
+        </property>
+        <property name="marca" type="string">
+            <column name="marca" length="50" not-null="true" />
+        </property>
+        <property name="modelo" type="string">
+            <column name="modelo" length="50" not-null="true" />
+        </property>
+        <property name="matricula" type="string">
+            <column name="matricula" length="50" not-null="true" />
+        </property>
+        <property name="numeroBastidores" type="string">
+            <column name="numeroBastidores" length="50" not-null="true" />
+        </property>
+        <property name="caballosFiscales" type="java.lang.Double">
+            <column name="caballosFiscales" precision="22" scale="0" />
+        </property>
+        <property name="plazas" type="java.lang.Double">
+            <column name="plazas" precision="22" scale="0" />
+        </property>
+        <property name="centimetrosCubicos" type="java.lang.Double">
+            <column name="centimetrosCubicos" precision="22" scale="0" />
+        </property>
+        <property name="kgCarga" type="java.lang.Double">
+            <column name="kgCarga" precision="22" scale="0" />
+        </property>
+        <property name="exencion" type="java.lang.Character">
+            <column name="exencion" length="1" />
+        </property>
+        <property name="fechaMatriculacion" type="date">
+            <column name="fechaMatriculacion" length="10" not-null="true" />
+        </property>
+        <property name="fechaAlta" type="date">
+            <column name="fechaAlta" length="10" not-null="true" />
+        </property>
+        <property name="fechaBajaTemporal" type="date">
+            <column name="fechaBajaTemporal" length="10" />
+        </property>
+        <set name="reciboses" table="recibos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idVehiculo" not-null="true" />
+            </key>
+            <one-to-many class="practica1.Recibos" />
+        </set>
+    </class>
+</hibernate-mapping>

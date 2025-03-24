@@ -1,0 +1,37 @@
+<Contribuyentes>
+    <Contribuyente id="2">
+        <NIF_NIE>125C</NIF_NIE>
+        <Nombre>Juan</Nombre>
+        <PrimerApellido>Martinez</PrimerApellido>
+        <SegundoApellido>Dominguez</SegundoApellido>
+        <TipoDeError>NIF ERRÓNEO</TipoDeError>
+    </Contribuyente>
+    <Contribuyente id="3">
+        <NIF_NIE></NIF_NIE>
+        <Nombre>Ruben Dario</Nombre>
+        <PrimerApellido>Fuertes</PrimerApellido>
+        <SegundoApellido>Montiel</SegundoApellido>
+        <TipoDeError>NIF BLANCO</TipoDeError>
+    </Contribuyente>
+    <Contribuyente id="4">
+        <NIF_NIE>0</NIF_NIE>
+        <Nombre>Alencar</Nombre>
+        <PrimerApellido>Lidiane</PrimerApellido>
+        <SegundoApellido>Morala</SegundoApellido>
+        <TipoDeError>NIF ERRÓNEO</TipoDeError>
+    </Contribuyente>
+    <Contribuyente id="13">
+        <NIF_NIE></NIF_NIE>
+        <Nombre>Luis</Nombre>
+        <PrimerApellido>Benito</PrimerApellido>
+        <SegundoApellido>Prieto</SegundoApellido>
+        <TipoDeError>NIF BLANCO</TipoDeError>
+    </Contribuyente>
+    <Contribuyente id="14">
+        <NIF_NIE>09699481J</NIF_NIE>
+        <Nombre>Armando</Nombre>
+        <PrimerApellido>Garcia</PrimerApellido>
+        <SegundoApellido>Prieto</SegundoApellido>
+        <TipoDeError>NIF DUPLICADO</TipoDeError>
+    </Contribuyente>
+</Contribuyentes>

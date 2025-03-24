@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 24-feb-2025 22:39:37 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="practica1.Recibos" table="recibos" catalog="db" optimistic-lock="version">
+        <id name="numRecibo" type="int">
+            <column name="numRecibo" />
+            <generator class="assigned" />
+        </id>
+        <many-to-one name="contribuyente" class="practica1.Contribuyente" fetch="select">
+            <column name="idContribuyente" not-null="true" />
+        </many-to-one>
+        <many-to-one name="vehiculos" class="practica1.Vehiculos" fetch="select">
+            <column name="idVehiculo" not-null="true" />
+        </many-to-one>
+        <property name="fechaPadron" type="date">
+            <column name="fechaPadron" length="10" not-null="true" />
+        </property>
+        <property name="fechaRecibo" type="date">
+            <column name="fechaRecibo" length="10" not-null="true" />
+        </property>
+        <property name="nifContribuyente" type="string">
+            <column name="nifContribuyente" length="50" not-null="true" />
+        </property>
+        <property name="direccionCompleta" type="string">
+            <column name="direccionCompleta" length="50" not-null="true" />
+        </property>
+        <property name="iban" type="string">
+            <column name="IBAN" length="50" />
+        </property>
+        <property name="tipoVehiculo" type="string">
+            <column name="tipoVehiculo" length="50" not-null="true" />
+        </property>
+        <property name="marcaModelo" type="string">
+            <column name="marcaModelo" length="50" not-null="true" />
+        </property>
+        <property name="unidad" type="string">
+            <column name="unidad" length="50" not-null="true" />
+        </property>
+        <property name="valorUnidad" type="double">
+            <column name="valorUnidad" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="totalRecibo" type="double">
+            <column name="totalRecibo" precision="22" scale="0" not-null="true" />
+        </property>
+        <property name="exencion" type="java.lang.Character">
+            <column name="exencion" length="1" />
+        </property>
+        <property name="bonificacion" type="java.lang.Double">
+            <column name="bonificacion" precision="22" scale="0" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="50" />
+        </property>
+    </class>
+</hibernate-mapping>

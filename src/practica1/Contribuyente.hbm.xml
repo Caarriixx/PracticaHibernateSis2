@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated 24-feb-2025 22:39:37 by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="practica1.Contribuyente" table="contribuyente" catalog="db" optimistic-lock="version">
+        <id name="idContribuyente" type="int">
+            <column name="idContribuyente" />
+            <generator class="assigned" />
+        </id>
+        <property name="nombre" type="string">
+            <column name="nombre" length="50" not-null="true" />
+        </property>
+        <property name="apellido1" type="string">
+            <column name="apellido1" length="50" not-null="true" />
+        </property>
+        <property name="apellido2" type="string">
+            <column name="apellido2" length="50" />
+        </property>
+        <property name="nifnie" type="string">
+            <column name="nifnie" length="50" not-null="true" />
+        </property>
+        <property name="direccion" type="string">
+            <column name="direccion" length="50" not-null="true" />
+        </property>
+        <property name="numero" type="string">
+            <column name="numero" length="50" />
+        </property>
+        <property name="paisCcc" type="string">
+            <column name="paisCCC" length="50" />
+        </property>
+        <property name="ccc" type="string">
+            <column name="CCC" length="50" />
+        </property>
+        <property name="iban" type="string">
+            <column name="IBAN" length="50" />
+        </property>
+        <property name="email" type="string">
+            <column name="email" length="50" />
+        </property>
+        <property name="bonificacion" type="java.lang.Double">
+            <column name="bonificacion" precision="22" scale="0" />
+        </property>
+        <property name="ayuntamiento" type="string">
+            <column name="ayuntamiento" length="50" />
+        </property>
+        <set name="vehiculoses" table="vehiculos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idContrubuyente" not-null="true" />
+            </key>
+            <one-to-many class="practica1.Vehiculos" />
+        </set>
+        <set name="reciboses" table="recibos" inverse="true" lazy="true" fetch="select">
+            <key>
+                <column name="idContribuyente" not-null="true" />
+            </key>
+            <one-to-many class="practica1.Recibos" />
+        </set>
+    </class>
+</hibernate-mapping>
