@@ -89,12 +89,15 @@ public class ExcelManager {
             ccc = cccCorregido;
         }
 
-        if (generarIban) {
-            String iban = IBANGenerator.generarIBAN(ccc);
+        String pais = obtenerValorCeldaComoString(row.getCell(8)).trim(); // columna I = índice 8
+
+        if (generarIban && !pais.isEmpty()) {
+            String iban = IBANGenerator.generarIBAN(ccc, pais);
             if (iban != null) {
                 row.getCell(10, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(iban);
             }
-        } else {
+        }
+         else {
             // Añadir al XML de errores CCC
             Map<String, String> error = new HashMap<>();
             error.put("id", String.valueOf(row.getRowNum() + 1));
