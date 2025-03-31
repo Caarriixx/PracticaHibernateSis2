@@ -8,7 +8,7 @@ package practica1;
 
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import practica1.HibernateUtil;
+import practica3.HibernateUtil;
 import java.util.Scanner;
 import org.hibernate.query.Query;
 import java.util.List;
@@ -17,17 +17,40 @@ import java.util.List;
 public class Main {
     public static void main(String[] args) {
         // Obtener la sesión de Hibernate
-        SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
-        Session session = sessionFactory.openSession();
-
-        if (session != null) {
+        SessionFactory sessionFactory = null;
+        Session session = null;
+                
+        try{
+            sessionFactory = HibernateUtil.getSessionFactory();
+            session = sessionFactory.openSession();
+            
+            if (session != null) {
             System.out.println("Conexión a la base de datos establecida correctamente.");
-        } else {
-            System.out.println("Error en la conexión a la base de datos.");
-            return; // Salimos del programa si no hay conexión
-        }
+            } else {
+                System.out.println("Error en la conexión a la base de datos.");
+                return; // Salimos del programa si no hay conexión
+            }
 
-        String filePath = "resources/SistemasVehiculos.xlsx";  // Asegúrate de que la ruta sea correcta
+            String filePath = "resources/SistemasVehiculos.xlsx";
+            
+            System.out.println("Iniciando procesamiento general...");
+            ExcelManager.procesarExcelGeneral();
+            System.out.println("Proceso finalizado. Verifica el Excel actualizado, los IBANs, correos y el XML de errores CCC.");
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        } finally {
+            // Cerrar la sesión de Hibernate si está abierta
+            if (session != null) {
+                session.close();
+            }
+            if (sessionFactory != null) {
+                sessionFactory.close();
+            }
+        }
+        
+
+          // Asegúrate de que la ruta sea correcta
         
 /*
         // Leer el archivo Excel
@@ -40,9 +63,7 @@ public class Main {
         ExcelManager.modificarExcel(filePath, 0, 2, 3, "Nuevo Valor");
         System.out.println("Modificación realizada con éxito.");
 */  
-        System.out.println("Iniciando procesamiento general...");
-        ExcelManager.procesarExcelGeneral();
-        System.out.println("Proceso finalizado. Verifica el Excel actualizado, los IBANs, correos y el XML de errores CCC.");
+        
 
     
         /*
