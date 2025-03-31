@@ -33,6 +33,96 @@ public class ExcelManager {
     private static List<Map<String, String>> errores = new ArrayList<>();
     private static Set<String> nifDuplicados = new HashSet<>();
     private static Set<String> nifRegistrados = new HashSet<>();
+    private static List<Map<String, String>> erroresCCC = new ArrayList<>();
+    private static Set<String> correosGenerados = new HashSet<>();
+
+    public static void procesarExcelGeneral() {
+        try (FileInputStream fis = new FileInputStream(new File(CONTRIBUYENTES_FILE));
+             Workbook workbook = new XSSFWorkbook(fis)) {
+
+            Sheet sheet = workbook.getSheetAt(0);
+            for (int i = 1; i <= sheet.getLastRowNum(); i++) {
+                Row row = sheet.getRow(i);
+                if (row == null) continue;
+                procesarContribuyente(row);
+            }
+
+            try (FileOutputStream fos = new FileOutputStream(new File(CONTRIBUYENTES_FILE))) {
+                workbook.write(fos);
+            }
+
+            generarXmlErroresCCC(); // Aún por implementar
+            System.out.println("Excel procesado. Se han generado correcciones y erroresCCC.xml si aplicaba.");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void procesarContribuyente(Row row) {
+        String nifNie = obtenerValorCeldaComoString(row.getCell(0)).trim();
+        String nombre = obtenerValorCeldaComoString(row.getCell(3)).trim();
+        String apellido1 = obtenerValorCeldaComoString(row.getCell(1)).trim();
+        String apellido2 = obtenerValorCeldaComoString(row.getCell(2)).trim();
+        String email = obtenerValorCeldaComoString(row.getCell(6)).trim();
+        String ccc = obtenerValorCeldaComoString(row.getCell(9)).replaceAll("\\s+", "").trim();
+
+        boolean nifCorrecto = NifNieValidator.esNifNieValido(nifNie);
+        boolean nifSubsanable = !nifCorrecto && NifNieValidator.calcularLetraCorrecta(nifNie) != null;
+        boolean cccCorrecto = CCCValidator.esCCCValido(ccc);
+        boolean cccSubsanable = !cccCorrecto && CCCValidator.corregirCCC(ccc) != null;
+
+        boolean generarIban = (nifCorrecto || nifSubsanable) && (cccCorrecto || cccSubsanable);
+        boolean generarCorreo = generarIban && email.isEmpty();
+
+        // Subsanar NIF si es posible
+        if (nifSubsanable) {
+            String nifCorregido = NifNieValidator.calcularLetraCorrecta(nifNie);
+            row.getCell(0).setCellValue(nifCorregido);
+            nifNie = nifCorregido;
+        }
+
+        // Subsanar CCC si es posible
+        if (cccSubsanable) {
+            String cccCorregido = CCCValidator.corregirCCC(ccc);
+            row.getCell(9).setCellValue(cccCorregido);
+            ccc = cccCorregido;
+        }
+
+        if (generarIban) {
+            String iban = IBANGenerator.generarIBAN(ccc);
+            if (iban != null) {
+                row.getCell(10, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(iban);
+            }
+        } else {
+            // Añadir al XML de errores CCC
+            Map<String, String> error = new HashMap<>();
+            error.put("id", String.valueOf(row.getRowNum() + 1));
+            error.put("Nombre", nombre);
+            error.put("Apellidos", apellido1 + " " + apellido2);
+            error.put("NIFNIE", nifNie);
+            error.put("CCCErroneo", ccc);
+            error.put("TipoError", cccSubsanable ? "SUBSANABLE CCC" : "IMPOSIBLE GENERAR IBAN");
+            erroresCCC.add(error); // Suponiendo que tienes una lista global `erroresCCC`
+    }
+
+    if (generarCorreo) {
+        String base = (nombre.isEmpty() ? "" : nombre.substring(0,1).toLowerCase())
+                    + (apellido1.isEmpty() ? "" : apellido1.substring(0,1).toLowerCase())
+                    + (apellido2.isEmpty() ? "" : apellido2.substring(0,1).toLowerCase());
+
+        int sufijo = 0;
+        String correoGenerado;
+        do {
+            String numero = (sufijo < 10) ? "0" + sufijo : String.valueOf(sufijo);
+            correoGenerado = base + numero + "@vehiculos2025.com";
+            sufijo++;
+        } while (correosGenerados.contains(correoGenerado)); // Lista global para evitar duplicados
+
+        correosGenerados.add(correoGenerado);
+        row.getCell(6, Row.MissingCellPolicy.CREATE_NULL_AS_BLANK).setCellValue(correoGenerado);
+    }
+}
 
     public static void validarYCorregirNifNie() {
         try (FileInputStream fis = new FileInputStream(new File(CONTRIBUYENTES_FILE));
@@ -130,6 +220,29 @@ public class ExcelManager {
             e.printStackTrace();
         }
     }
+    
+    private static void generarXmlErroresCCC() {
+        try (FileWriter writer = new FileWriter("resources/ErroresCCC.xml")) {
+            writer.write("<Cuentas>\n");
+            for (Map<String, String> error : erroresCCC) {
+                writer.write(String.format("    <Cuenta id=\"%s\">\n", error.get("id")));
+                writer.write(String.format("        <Nombre>%s</Nombre>\n", error.get("Nombre")));
+                writer.write(String.format("        <Apellidos>%s</Apellidos>\n", error.get("Apellidos")));
+                writer.write(String.format("        <NIFNIE>%s</NIFNIE>\n", error.get("NIFNIE")));
+                writer.write(String.format("        <CCCErroneo>%s</CCCErroneo>\n", error.get("CCCErroneo")));
+                if (error.containsKey("TipoError")) {
+                    writer.write(String.format("        <TipoError>%s</TipoError>\n", error.get("TipoError")));
+                } else if (error.containsKey("IBANCorrecto")) {
+                    writer.write(String.format("        <IBANCorrecto>%s</IBANCorrecto>\n", error.get("IBANCorrecto")));
+                }
+                writer.write("    </Cuenta>\n");
+            }
+            writer.write("</Cuentas>\n");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static List<List<String>> leerExcel(String filePath, int hojaIndex) {
         List<List<String>> datos = new ArrayList<>();
         try (FileInputStream fis = new FileInputStream(new File(filePath));

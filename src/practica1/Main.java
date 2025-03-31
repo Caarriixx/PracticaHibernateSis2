@@ -40,9 +40,10 @@ public class Main {
         ExcelManager.modificarExcel(filePath, 0, 2, 3, "Nuevo Valor");
         System.out.println("Modificación realizada con éxito.");
 */  
-        System.out.println("Iniciando validación de NIF/NIE...");
-        ExcelManager.validarYCorregirNifNie();
-        System.out.println("Proceso finalizado. Verifica el archivo Excel y el XML de errores.");
+        System.out.println("Iniciando procesamiento general...");
+        ExcelManager.procesarExcelGeneral();
+        System.out.println("Proceso finalizado. Verifica el Excel actualizado, los IBANs, correos y el XML de errores CCC.");
+
     
         /*
         Scanner scanner = new Scanner(System.in);
